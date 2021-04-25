@@ -3,319 +3,123 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-import asyncio
+import threading
+import os
 
 
-enmap = Gtk.Entry()
-enmapa = Gtk.Entry()
 
-ex4text = Gtk.Entry()
+ips = Gtk.Entry()
+dirs = Gtk.Entry()
+wd = Gtk.Entry()
+wdck = Gtk.Entry()
+comm = Gtk.Entry()
+comm2 = Gtk.Entry()
 
-di1text = Gtk.Entry()
-di2text = Gtk.Entry()
-di3text = Gtk.Entry()
-
-WP2text = Gtk.Entry()
-WP3text = Gtk.Entry()
-
-Nktext = Gtk.Entry()
-
-HC1text = Gtk.Entry()
-HC2text = Gtk.Entry()
-HC3text = Gtk.Entry()
-
-JN2text = Gtk.Entry()
-JN3text = Gtk.Entry()
-
-HY2text = Gtk.Entry()
-HY3text = Gtk.Entry()
-HY4text = Gtk.Entry()
-
-async def run(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[Nmap]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
-
-async def rundi(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[Dirb]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
-
-
-async def runwp(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[WPScan]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")	
-
-
-async def runnk(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[WPScan]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
-
-async def runhc(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[Hashcat]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
-
-async def runjn(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr= await proc.communicate()
-
-		if stdout:
-			print(f'[JOHN]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
-
-async def runhy(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[Hydra]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
-
-
-async def runex(cmd):
-		proc = await asyncio.create_subprocess_shell(cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-		stdout, stderr = await proc.communicate()
-
-		if stdout:
-			print(f'[Enum4Linux]\n{stdout.decode()}')
-
-		await proc.wait()
-
-		if proc.returncode != 0:
-			print("Error")
-		else:
-			print("Termino")
 
 class winini(Gtk.Window):
-	"""docstring for winini"""
 	def __init__(self):
-		Gtk.Window.__init__(self, title="Red de Seguridad")
+
+		self.timer=None
+		self.event=None
+
+
+
+		Gtk.Window.__init__(self, title="Red de seguridad")
 		self.set_default_size(400,0)
 
 		layout = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 		self.add(layout)
-		#contenedor
+
 		notebook = Gtk.Notebook()
 		self.add(notebook)
 
-		bnmap = Gtk.Button(label="NMAP")
-		ex4but = Gtk.Button(label="Enum4Linux")
-		dibut = Gtk.Button(label="dirb")
-		WPbut = Gtk.Button(label="WPScan")
-		Nkbut = Gtk.Button(label="Nikto")
-		HCbut = Gtk.Button(label="Hashcat")
-		JNbut = Gtk.Button(label="John")
-		HYbut = Gtk.Button(label="Hydra")
+		grid = Gtk.Grid()
+		self.add(grid)
 
-		enmap.set_text("Scan IP") 
-		enmapa.set_text("-Pn -A -sT -p-")
-
-		ex4text.set_text("Parametros enum4linux") 
-
-		di1text.set_text("IP")
-		di2text.set_text("-w")
-		di3text.set_text("/usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt")
-
-		WP2text.set_text("--enumerate")
-		WP3text.set_text("/usr/share/wordlists/")
-
-		Nktext.set_text("Parametros Nikto")
-
-		HC2text.set_text("Parametros")
-		HC3text.set_text("/usr/share/wordlists/")
-
-		JN2text.set_text("Parametros")
-		JN3text.set_text("/usr/share/wordlists/")
-
-		HY2text.set_text("-t 5 -s port")
-		HY4text.set_text("-l username")
-		HY3text.set_text("-P /usr/share/wordlists/")
-
-		self.page1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-		self.page1.set_border_width(10)
-		self.page1.add(Gtk.new_with_label("Scan de ip"))
-		self.page1.add(enmap)
-		self.page1.add(enmapa)
-		self.page1.add(bnmap)
-		bnmap.connect("clicked", self.nmapbut)
-		self.page1.add(Gtk.Separator())
-		self.page1.add(ex4text)
-		self.page1.add(ex4but)
-		ex4but.connect("clicked", self.ex4but)
-		self.page1.add(Gtk.Separator())
-		self.page1.add(Gtk.Entry())
-		self.page1.add(Gtk.Button(label="Netdiscover"))
-		self.page1.add(Gtk.Separator())
-		notebook.append_page(self.page1, Gtk.Label("Scan ip"))
-
-		self.page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-		self.page2.set_border_width(10)
-		self.page2.add(Gtk.Label("Scan de web"))
-		self.page2.add(di1text)
-		self.page2.add(di2text)
-		self.page2.add(di3text)
-		self.page2.add(dibut)
-		dibut.connect("clicked", self.dibut)
-		self.page2.add(Gtk.Separator())
-		self.page2.add(WP2text)
-		self.page2.add(WP3text)
-		self.page2.add(WPbut)
-		WPbut.connect("clicked", self.WPbut)
-		self.page2.add(Gtk.Separator())
-		self.page2.add(Nktext)
-		self.page2.add(Nkbut)
-		Nkbut.connect("clicked", self.Nkbut)
-		notebook.append_page(self.page2, Gtk.Label("Scan web"))
-
-		self.page3 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-		self.page3.set_border_width(10)
-		self.page3.add(Gtk.Label("Crackeadores"))
-		self.page3.add(HC1text)
-		self.page3.add(HC2text)
-		self.page3.add(HC3text)
-		self.page3.add(HCbut)
-		HCbut.connect("clicked", self.HCbut)
-		self.page3.add(JN2text)
-		self.page3.add(JN3text)
-		self.page3.add(JNbut)
-		JNbut.connect("clicked", self.JNbut)
-		self.page3.add(HY2text)
-		self.page3.add(HY4text)
-		self.page3.add(HY3text)
-		self.page3.add(HYbut)
-		HYbut.connect("clicked", self.HYbut)
-		notebook.append_page(self.page3, Gtk.Label("Cracks"))
-
-		self.page4 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-		self.page4.set_border_width(10)
-		self.page4.add(Gtk.Label("Base de datos"))
-		self.page4.add(Gtk.Entry())
-		self.page4.add(Gtk.Button(label="Sqlmap"))
-		notebook.append_page(self.page4, Gtk.Label("Analisis web"))
-
-		self.page5 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-		self.page5.set_border_width(10)
-		self.page5.add(Gtk.Label("Metasploit"))
-		self.page5.add(Gtk.Entry())
-		self.page5.add(Gtk.Button(label="Crear junk metasploit"))
-		self.page5.add(Gtk.Button(label="Analizar junk metasploit"))
-		self.page5.add(Gtk.Separator())
-		self.page5.add(Gtk.Label("Terminal Metasploit"))
-		self.page5.add(Gtk.Button(label="Activar DB Metasploit"))
-		self.page5.add(Gtk.Button(label="Iniciar Metasploit"))
-		notebook.append_page(self.page5, Gtk.Label("Metasploit"))
+		grid2 = Gtk.Grid()
+		self.add(grid2)
 
 		main_menu_bar = Gtk.MenuBar()
-		#drop
 		file_menu = Gtk.Menu()
-		file_drop = Gtk.MenuItem("Hash")
+		file_drop = Gtk.MenuItem(label="Archivo")
 
-		#Subitems
-		file_abrir = Gtk.MenuItem("Abrir")
+
+		file_abrir = Gtk.MenuItem(label="Abrir")
 		file_abrir.connect("activate", self.on_file_clicked)
 		file_menu.append(Gtk.SeparatorMenuItem())
-		file_cerrar = Gtk.MenuItem("Cerrar")
+		file_cerrar = Gtk.MenuItem(label="Cerrar")
 
 		file_drop.set_submenu(file_menu)
 		file_menu.append(file_abrir)
 		file_drop.set_submenu(file_menu)
 		file_menu.append(file_cerrar)
 
+
 		main_menu_bar.append(file_drop)
+
+		self.page1 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+		self.page1.set_border_width(10)
+		self.page1.add(Gtk.Label(label="Scan ip"))
+		self.page1.add(ips)
+		self.page1.add(Gtk.Label(label="Comandos"))
+		self.page1.add(comm)
+		self.page1.add(Gtk.Label(label="Wordlist Web"))
+		self.page1.add(wd)
+		wd.set_text("/usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt")
+		
+
+		self.page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+		self.page2.set_border_width(10)
+		self.page2.add(dirs)
+		self.page2.add(Gtk.Label(label="Ruta del archivo"))
+		self.page2.add(comm2)
+		self.page2.add(Gtk.Label(label="Comandos"))
+
+
+		button_nmap = Gtk.Button(label="Nmap")
+		button_nmap.connect("clicked",self.start_nmap)
+
+		button_nmap_def = Gtk.Button(label="Nmap (Default)")
+		button_nmap_def.connect("clicked", self._start_nmap_def)
+
+
+		button_gobuster = Gtk.Button(label="Gobuster")
+		button_gobuster.connect("clicked", self.gobus)
+
+		button_gobuster_def = Gtk.Button(label="Gobuster (Default)")
+		button_gobuster_def.connect("clicked", self._gobus_def)
+
+		button_nikto = Gtk.Button(label="Nikto")
+		button_nikto.connect("clicked", self.nkt)
+
+		button_nikto_def = Gtk.Button(label="Nikto (Default)")
+		button_nikto_def.connect("clicked", self._nikto_def)
+
+		button_steghide_def = Gtk.Button(label="Steghide")
+		button_steghide_def.connect("clicked", self._steg_def)
+
+		grid.add(button_nmap)
+		grid.attach_next_to(button_nmap_def, button_nmap, Gtk.PositionType.RIGHT, 1, 1)
+		grid.attach_next_to(button_gobuster, button_nmap_def, Gtk.PositionType.RIGHT,1,1)
+		grid.attach_next_to(button_gobuster_def, button_gobuster, Gtk.PositionType.RIGHT,1,1)
+		grid.attach_next_to(button_nikto, button_gobuster_def, Gtk.PositionType.RIGHT,1,1)
+		grid.attach_next_to(button_nikto_def, button_nikto, Gtk.PositionType.RIGHT,1,1)
+
+		grid2.add(button_steghide_def)
+
+		notebook.append_page(self.page1, Gtk.Label(label="Analisis Web"))
+		notebook.append_page(self.page2, Gtk.Label(label="Esteganografía"))
+
+
 
 		layout.pack_start(main_menu_bar, True, True, 0)
 		layout.pack_start(notebook, True, True, 0)
+		layout.pack_start(grid, True, True, 0)
+		layout.pack_start(grid2, True, True, 0)
 
-	def nmapbut(self, button):
-		asyncio.run(run('nmap ' + enmapa.get_text() + ' ' + enmap.get_text()))
-
-	def ex4but(self, button):
-		asyncio.run(runex('enum4linux ' + enmap.get_text()))
-
-	def dibut(self, button):
-		asyncio.run(rundi('dirb ' + di1text.get_text() + ' ' + di2text.get_text() + ' ' + di3text.get_text()))
-
-	def WPbut(self, button):
-		asyncio.run(runwp('wpscan --update --url ' + di1text.get_text() + ' ' + WP2text.get_text() + ' ' + WP3text.get_text()))
-
-	def Nkbut(self, button):
-		asyncio.run(runnk('nikto -h ' + di1text.get_text()))
-
-	def HCbut(self, button):
-		asyncio.run(runhc('hashcat ' + HC1text.get_text()))
-
-	def JNbut(self, button):
-		asyncio.run(runjn('john ' + HC1text.get_text()))
-
-	def HYbut(self, button):
-		asyncio.run(runhy('hydra ' + HC1text.get_text() + ' ' + HY4text.get_text() + ' ' + HY3text.get_text() + ' ' + HY2text.get_text()))
 
 	def on_file_clicked(self, widget):
-		dialog = Gtk.FileChooserDialog(
-			"Selecciona un archivo",
-			self,
-			Gtk.FileChooserAction.OPEN,
-			(
+			dialog = Gtk.FileChooserDialog("Seleccionar un archivo", self, Gtk.FileChooserAction.OPEN,(
 				Gtk.STOCK_CANCEL,
 				Gtk.ResponseType.CANCEL,
 				Gtk.STOCK_OPEN,
@@ -323,20 +127,153 @@ class winini(Gtk.Window):
 				),
 			)
 
-		self.add_filters(dialog)
+			self.add_filters(dialog)
 
-		resp = dialog.run()
+			resp = dialog.run()
 
-		if resp == Gtk.ResponseType.OK:
-			HC1text.set_text(dialog.get_filename())
+			
 
-		dialog.destroy()
+			dialog.destroy()
+
 
 	def add_filters(self, dialog):
-		filter_text = Gtk.FileFilter()
-		filter_text.set_name("hashfiles")
-		filter_text.add_mime_type("text/plain")
-		dialog.add_filter(filter_text)
+			filter_text = Gtk.FileFilter()
+			filter_text.set_name("Resultado")
+			filter_text.add_mime_type("text/plain")
+			dialog.add_filter(filter_text)
+
+	def start_nmap(self, button):
+
+		
+		self.timer = threading.Thread(target=self.runmp)
+		self.event = threading.Event()
+		self.timer.daemon=True
+		self.timer.start()
+
+	def runmp(self): 
+
+		print("[+] Inicio Nmap")
+
+		ip_get = ips.get_text()
+		comd = comm.get_text()
+		pid = os.system("nmap " + comd + " " + ip_get + " " + ">" + " " + "Nmap.log")
+
+		if(pid == 0):
+			print("Terminado Nmap")
+
+	def _start_nmap_def(self, button):
+		
+		self.timer = threading.Thread(target=self.runmp_def)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+	def runmp_def(self):
+
+		print("[+] Inicio Nmap-default")
+
+		ip_get = ips.get_text()
+		pid2 = os.system("nmap -sT -A -p- --script=vulners --script=smb-vuln* '--script=banner,(ftp* or ssl*) and not (brute or external or dos or broadcast or fuzzer)' " + ip_get + " " + ">" + " " + "Nmap-default.log")
+
+		if(pid2 == 0):
+			print("Terminado Nmap default")
+
+	def gobus(self, button):
+
+		self.timer = threading.Thread(target=self.gbst)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+	def gbst(self):
+
+		print("[+] Inicio Gobuster")
+
+		ip_get = ips.get_text()
+		comd = comm.get_text()
+		wl = wd.get_text()
+		pid3 = os.system("gobuster dir -u " + ip_get + " " + comd + " -w" + " " + wl + " " + ">" + " " + "Gobuster.log" )
+
+		if(pid3 == 0):
+			print("Terminado Gobuster")
+
+	def _gobus_def(self, button):
+
+		self.timer = threading.Thread(target=self.gbst_def)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+	def gbst_def(self):
+
+		print("[+] Inicio Gobuster-default")
+
+		ip_get = ips.get_text()
+		
+		pid4 = os.system("gobuster dir -u " + ip_get + " --no-progress --no-error -t 4 -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt" + " " + ">" + " " + "Gobuster-default.log")
+
+		if(pid4 == 0):
+			print("Terminado Gobuster default")
+
+
+	def nkt(self, button):
+
+		self.timer = threading.Thread(target=self.nk)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+
+	def nk(self):
+
+		print("[+] Inicio Nikto")
+
+		ip_get = ips.get_text()
+		comd = comm.get_text()
+
+		pid5 = os.system("nikto" + " " + comd + " " + ip_get + " " + ">" + " " + "Nikto.log")
+
+		if(pid5 == 0):
+			print("Terminado Nikto")
+
+
+	def _nikto_def(self, button):
+
+		self.timer = threading.Thread(target=self.nk_def)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+	def nk_def(self):
+
+		print("[+] Inicio Nikto-default")
+
+		ip_get = ips.get_text()
+
+		pid6 = os.system("nikto -h " + ip_get + " " + ">" + " " + "Nikto-default.log")
+
+		if(pid6 == 0):
+			print("Terminado Nikto default")
+
+
+	def _steg_def(self,button):
+		self.timer = threading.Thread(target=self._steg_d)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+
+	def _steg_d(self):
+
+		print("[+] Inicio steghide")
+
+		rutfil = dirs.get_text()
+
+		pid7 = os.system("steghide extract -sf" + " " + rutfil)
+
+		if(pid7 == 0):
+			print("Terminado steghide")
+		
 
 
 
@@ -344,3 +281,4 @@ win = winini()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
 Gtk.main()
+

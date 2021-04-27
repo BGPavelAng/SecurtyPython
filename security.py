@@ -9,11 +9,17 @@ import os
 
 
 ips = Gtk.Entry()
+ips2 = Gtk.Entry()
 dirs = Gtk.Entry()
 wd = Gtk.Entry()
 wdck = Gtk.Entry()
 comm = Gtk.Entry()
 comm2 = Gtk.Entry()
+comm3 = Gtk.Entry()
+user_h = Gtk.Entry()
+pass_h = Gtk.Entry()
+chk_ssh = Gtk.CheckButton(label="ssh")
+chk_ftp = Gtk.CheckButton(label="ftp")
 
 
 class winini(Gtk.Window):
@@ -38,6 +44,12 @@ class winini(Gtk.Window):
 
 		grid2 = Gtk.Grid()
 		self.add(grid2)
+
+		grid3 = Gtk.Grid()
+		self.add(grid3)
+
+		grid4 = Gtk.Grid()
+		self.add(grid4)
 
 		main_menu_bar = Gtk.MenuBar()
 		file_menu = Gtk.Menu()
@@ -70,10 +82,22 @@ class winini(Gtk.Window):
 
 		self.page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 		self.page2.set_border_width(10)
-		self.page2.add(dirs)
 		self.page2.add(Gtk.Label(label="Ruta del archivo"))
-		self.page2.add(comm2)
+		self.page2.add(dirs)
 		self.page2.add(Gtk.Label(label="Comandos"))
+		self.page2.add(comm2)
+
+		self.page3 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+		self.page3.set_border_width(10)
+		self.page3.add(Gtk.Label(label="Scan ip"))
+		self.page3.add(ips2)
+		self.page3.add(Gtk.Label(label="Comandos"))
+		self.page3.add(comm3)
+		self.page3.add(Gtk.Label(label="Usuario"))
+		self.page3.add(user_h)
+		self.page3.add(Gtk.Label(label="Password"))
+		self.page3.add(pass_h)
+		pass_h.set_text("/usr/share/wordlists/rockyou.txt")
 
 
 		button_nmap = Gtk.Button(label="Nmap")
@@ -95,8 +119,17 @@ class winini(Gtk.Window):
 		button_nikto_def = Gtk.Button(label="Nikto (Default)")
 		button_nikto_def.connect("clicked", self._nikto_def)
 
-		button_steghide_def = Gtk.Button(label="Steghide")
+		button_steghide= Gtk.Button(label="Steghide")
+		button_steghide.connect("clicked", self._steg)
+
+		button_steghide_def = Gtk.Button(label="Steghide (Default)")
 		button_steghide_def.connect("clicked", self._steg_def)
+
+		button_hydra = Gtk.Button(label="Hydra")
+		button_hydra.connect("clicked", self._hydra)
+
+		button_hydra_def = Gtk.Button(label="Hydra (Default)")
+		button_hydra_def.connect("clicked", self._hydra_def)
 
 		grid.add(button_nmap)
 		grid.attach_next_to(button_nmap_def, button_nmap, Gtk.PositionType.RIGHT, 1, 1)
@@ -105,10 +138,26 @@ class winini(Gtk.Window):
 		grid.attach_next_to(button_nikto, button_gobuster_def, Gtk.PositionType.RIGHT,1,1)
 		grid.attach_next_to(button_nikto_def, button_nikto, Gtk.PositionType.RIGHT,1,1)
 
-		grid2.add(button_steghide_def)
+		grid2.add(button_steghide)
+		grid2.attach_next_to(button_steghide_def, button_steghide, Gtk.PositionType.RIGHT, 1, 1)
+
+		grid3.add(button_hydra)
+		grid3.attach_next_to(button_hydra_def, button_hydra, Gtk.PositionType.RIGHT, 1, 1)
+
+		grid4.add(chk_ssh)
+		grid4.attach_next_to(chk_ftp, chk_ssh, Gtk.PositionType.RIGHT, 1, 1)
+		
+
+		self.page1.add(grid)
+		self.page2.add(grid2)
+		self.page3.add(grid3)
+		self.page3.add(grid4)
+
+
 
 		notebook.append_page(self.page1, Gtk.Label(label="Analisis Web"))
 		notebook.append_page(self.page2, Gtk.Label(label="Esteganografía"))
+		notebook.append_page(self.page3, Gtk.Label(label="Bruteforce"))
 
 
 
@@ -116,6 +165,8 @@ class winini(Gtk.Window):
 		layout.pack_start(notebook, True, True, 0)
 		layout.pack_start(grid, True, True, 0)
 		layout.pack_start(grid2, True, True, 0)
+		layout.pack_start(grid3, True, True, 0)
+		layout.pack_start(grid4, True, True, 0)
 
 
 	def on_file_clicked(self, widget):
@@ -190,9 +241,9 @@ class winini(Gtk.Window):
 		print("[+] Inicio Gobuster")
 
 		ip_get = ips.get_text()
-		comd = comm.get_text()
+		comd2 = comm.get_text()
 		wl = wd.get_text()
-		pid3 = os.system("gobuster dir -u " + ip_get + " " + comd + " -w" + " " + wl + " " + ">" + " " + "Gobuster.log" )
+		pid3 = os.system("gobuster dir -u " + ip_get + " " + comd2 + " -w" + " " + wl + " " + ">" + " " + "Gobuster.log" )
 
 		if(pid3 == 0):
 			print("Terminado Gobuster")
@@ -229,9 +280,9 @@ class winini(Gtk.Window):
 		print("[+] Inicio Nikto")
 
 		ip_get = ips.get_text()
-		comd = comm.get_text()
+		comd3 = comm.get_text()
 
-		pid5 = os.system("nikto" + " " + comd + " " + ip_get + " " + ">" + " " + "Nikto.log")
+		pid5 = os.system("nikto" + " " + comd3 + " " + ip_get + " " + ">" + " " + "Nikto.log")
 
 		if(pid5 == 0):
 			print("Terminado Nikto")
@@ -265,15 +316,88 @@ class winini(Gtk.Window):
 
 	def _steg_d(self):
 
-		print("[+] Inicio steghide")
+		print("[+] Inicio steghide-default")
 
 		rutfil = dirs.get_text()
 
 		pid7 = os.system("steghide extract -sf" + " " + rutfil)
 
 		if(pid7 == 0):
+			print("Terminado steghide-default")
+
+	def _steg(self,button):
+		self.timer = threading.Thread(target=self._steg_n)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+
+	def _steg_n(self):
+
+		print("[+] Inicio steghide")
+
+		rutfil = dirs.get_text()
+		comd4 = comm2.get_text()
+
+		pid7 = os.system("steghide " + comd4 + " " + rutfil)
+
+		if(pid7 == 0):
 			print("Terminado steghide")
 		
+	def _hydra(self, button):
+
+		self.timer = threading.Thread(target=self._hydra_n)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+
+
+	def _hydra_n(self):
+		print("[+] Inicio hydra")
+
+		comd5 = comm3.get_text()
+		ip_h = ips2.get_text()
+		status = chk_ssh.get_active()
+		status2 = chk_ftp.get_active()
+		if status == True:
+			chk_ftp.set_active(False)
+			pid8 = os.system("hydra " + comd5 + " " + "ssh://" + ip_h + ">" + " " + "hydra.log")
+
+			if(pid8 == 0):
+				print("Terminado hydra")
+
+		if status2 == True:
+			chk_ssh.set_active(False)
+			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra.log")
+
+			if(pid9 == 0):
+				print("Terminado hydra")
+
+	def _hydra_def(button, self):
+		self.timer = threading.Thread(target=self._hydra_fun)
+		self.event = threading.Event()
+		self.timer.daemon = True
+		self.timer.start()
+
+	def _hydra_fun(self):
+		ip_h = ips2.get_text()
+		_usr = user_h.get_text()
+		_pass = pass_h.get_text()
+		if status == True:
+			chk_ftp.set_active(False)
+			pid8 = os.system("hydra " + "-l" + " " + _usr + " " + "-P" + _pass + " " + "ssh://" + ip_h + ">" + " " + "hydra.log")
+
+			if(pid8 == 0):
+				print("Terminado hydra")
+
+		if status2 == True:
+			chk_ssh.set_active(False)
+			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra.log")
+
+			if(pid9 == 0):
+				print("Terminado hydra")
+
 
 
 

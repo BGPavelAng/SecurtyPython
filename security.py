@@ -8,6 +8,7 @@ import os
 
 
 
+
 ips = Gtk.Entry()
 ips2 = Gtk.Entry()
 dirs = Gtk.Entry()
@@ -22,11 +23,13 @@ chk_ssh = Gtk.CheckButton(label="ssh")
 chk_ftp = Gtk.CheckButton(label="ftp")
 
 
+
 class winini(Gtk.Window):
 	def __init__(self):
 
 		self.timer=None
 		self.event=None
+
 
 
 
@@ -89,7 +92,7 @@ class winini(Gtk.Window):
 
 		self.page3 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 		self.page3.set_border_width(10)
-		self.page3.add(Gtk.Label(label="Scan ip"))
+		self.page3.add(Gtk.Label(label="Scan ip:port"))
 		self.page3.add(ips2)
 		self.page3.add(Gtk.Label(label="Comandos"))
 		self.page3.add(comm3)
@@ -261,7 +264,7 @@ class winini(Gtk.Window):
 
 		ip_get = ips.get_text()
 		
-		pid4 = os.system("gobuster dir -u " + ip_get + " --no-progress --no-error -t 4 -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt" + " " + ">" + " " + "Gobuster-default.log")
+		pid4 = os.system("gobuster dir -u " + ip_get + " --no-progress --no-error -t 4 -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -x php,txt" + " " + ">" + " " + "Gobuster-default.log")
 
 		if(pid4 == 0):
 			print("Terminado Gobuster default")
@@ -362,14 +365,14 @@ class winini(Gtk.Window):
 		status2 = chk_ftp.get_active()
 		if status == True:
 			chk_ftp.set_active(False)
-			pid8 = os.system("hydra " + comd5 + " " + "ssh://" + ip_h + ">" + " " + "hydra.log")
+			pid8 = os.system("hydra " + comd5 + " " + "ssh://" + ip_h + ">" + " " + "hydra-default.log")
 
 			if(pid8 == 0):
 				print("Terminado hydra")
 
 		if status2 == True:
 			chk_ssh.set_active(False)
-			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra.log")
+			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra-default.log")
 
 			if(pid9 == 0):
 				print("Terminado hydra")
@@ -384,19 +387,15 @@ class winini(Gtk.Window):
 		ip_h = ips2.get_text()
 		_usr = user_h.get_text()
 		_pass = pass_h.get_text()
-		if status == True:
-			chk_ftp.set_active(False)
-			pid8 = os.system("hydra " + "-l" + " " + _usr + " " + "-P" + _pass + " " + "ssh://" + ip_h + ">" + " " + "hydra.log")
 
-			if(pid8 == 0):
-				print("Terminado hydra")
 
-		if status2 == True:
-			chk_ssh.set_active(False)
-			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra.log")
+		pid8 = os.system("hydra " + "-l " + _usr + " " + "-P " + _pass + " " + ip_h + " >" + " " + "hydra.log")
 
-			if(pid9 == 0):
-				print("Terminado hydra")
+		if(pid8 == 0):
+			print("Terminado hydra")
+
+		
+			
 
 
 
@@ -405,4 +404,3 @@ win = winini()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
 Gtk.main()
-

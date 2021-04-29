@@ -357,25 +357,18 @@ class winini(Gtk.Window):
 
 
 	def _hydra_n(self):
-		print("[+] Inicio hydra")
-
-		comd5 = comm3.get_text()
+		print("[+] Inicio Hydra")
 		ip_h = ips2.get_text()
-		status = chk_ssh.get_active()
-		status2 = chk_ftp.get_active()
-		if status == True:
-			chk_ftp.set_active(False)
-			pid8 = os.system("hydra " + comd5 + " " + "ssh://" + ip_h + ">" + " " + "hydra-default.log")
+		_usr = user_h.get_text()
+		_pass = pass_h.get_text()
+		comd5 = comm3.get_text()
 
-			if(pid8 == 0):
-				print("Terminado hydra")
 
-		if status2 == True:
-			chk_ssh.set_active(False)
-			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra-default.log")
+		pid8 = os.system("hydra " + "-l " + _usr + " " + "-P " + _pass + " " + ip_h + " " + comd5  + " >" + " " + "hydra-default.log")
 
-			if(pid9 == 0):
-				print("Terminado hydra")
+		if(pid8 == 0):
+			print("Terminado hydra")
+		
 
 	def _hydra_def(button, self):
 		self.timer = threading.Thread(target=self._hydra_fun)
@@ -384,15 +377,26 @@ class winini(Gtk.Window):
 		self.timer.start()
 
 	def _hydra_fun(self):
+		print("[+] Inicio Hydra")
+
+		comd5 = comm3.get_text()
 		ip_h = ips2.get_text()
-		_usr = user_h.get_text()
-		_pass = pass_h.get_text()
+		status = chk_ssh.get_active()
+		status2 = chk_ftp.get_active()
+		if status == True:
+			chk_ftp.set_active(False)
+			pid8 = os.system("hydra " + comd5 + " " + "ssh://" + ip_h + ">" + " " + "hydra.log")
 
+			if(pid8 == 0):
+				print("Terminado hydra")
 
-		pid8 = os.system("hydra " + "-l " + _usr + " " + "-P " + _pass + " " + ip_h + " >" + " " + "hydra.log")
+		if status2 == True:
+			chk_ssh.set_active(False)
+			pid9 = os.system("hydra " + comd5 + " " + "ftp://" + ip_h + ">" + " " + "hydra.log")
 
-		if(pid8 == 0):
-			print("Terminado hydra")
+			if(pid9 == 0):
+				print("Terminado hydra")
+		
 
 		
 			

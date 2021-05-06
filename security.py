@@ -370,7 +370,7 @@ class winini(Gtk.Window):
 			print("Terminado hydra")
 		
 
-	def _hydra_def(button, self):
+	def _hydra_def(self, button):
 		self.timer = threading.Thread(target=self._hydra_fun)
 		self.event = threading.Event()
 		self.timer.daemon = True
